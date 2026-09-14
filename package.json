@@ -1,0 +1,59 @@
+{
+  "name": "nui-rainbow",
+  "version": "0.1.0",
+  "description": "Rainbow hue cycle for any element. Web component, CSS class, or applyRainbow().",
+  "type": "module",
+  "sideEffects": [
+    "./dist/index.js",
+    "./dist/nui-rainbow.js",
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./element": {
+      "types": "./dist/nui-rainbow.d.ts",
+      "import": "./dist/nui-rainbow.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/write-css.mjs",
+    "check": "biome check .",
+    "write": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.2",
+    "happy-dom": "20.10.6",
+    "typescript": "5.8.3",
+    "vitest": "4.1.9"
+  },
+  "keywords": [
+    "rainbow",
+    "hue",
+    "animation",
+    "css",
+    "web-components",
+    "nui"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nucleify/nui-rainbow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nucleify/nui-rainbow/issues"
+  },
+  "homepage": "https://github.com/Nucleify/nui-rainbow#readme"
+}

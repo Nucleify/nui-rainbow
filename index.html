@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nui-rainbow</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        background: #03050c;
+        color: #e7ebe8;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+      }
+
+      nui-rainbow {
+        display: grid;
+        gap: 1.25rem;
+        width: min(36rem, 100%);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2.4rem;
+        color: var(--nui-rainbow-color);
+      }
+
+      label {
+        display: grid;
+        gap: 0.35rem;
+        font-size: 0.85rem;
+        color: #8b968f;
+      }
+
+      input,
+      select {
+        accent-color: var(--nui-rainbow-color);
+      }
+
+      .swatch {
+        height: 4.5rem;
+        border-radius: 1rem;
+        background: hsl(var(--rainbow-hue) 80% 52% / 0.35);
+        box-shadow: 0 0 32px hsl(var(--rainbow-hue) 70% 50% / 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <nui-rainbow id="cycle" duration="12s">
+      <h1>nui-rainbow</h1>
+      <div class="swatch"></div>
+      <label>
+        Duration (s)
+        <input id="duration" type="range" min="4" max="90" value="12" />
+      </label>
+      <label>
+        <span>
+          <input id="paused" type="checkbox" />
+          Paused
+        </span>
+      </label>
+    </nui-rainbow>
+    <script type="module">
+      import './dist/index.js';
+
+      const cycle = document.querySelector('#cycle');
+      const duration = document.querySelector('#duration');
+      const paused = document.querySelector('#paused');
+
+      duration.addEventListener('input', () => {
+        cycle.duration = Number(duration.value);
+      });
+
+      paused.addEventListener('change', () => {
+        cycle.paused = paused.checked;
+      });
+    </script>
+  </body>
+</html>

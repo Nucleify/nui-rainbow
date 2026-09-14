@@ -1,0 +1,183 @@
+@property --rainbow-hue {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 132deg;
+}
+
+@property --nui-rainbow-cycle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 132deg;
+}
+
+@keyframes nui-rainbow-hue-cycle {
+  0% {
+    --nui-rainbow-cycle: 132deg;
+  }
+
+  12.5% {
+    --nui-rainbow-cycle: 210deg;
+  }
+
+  25% {
+    --nui-rainbow-cycle: 258deg;
+  }
+
+  37.5% {
+    --nui-rainbow-cycle: 292deg;
+  }
+
+  50% {
+    --nui-rainbow-cycle: 360deg;
+  }
+
+  62.5% {
+    --nui-rainbow-cycle: 392deg;
+  }
+
+  75% {
+    --nui-rainbow-cycle: 412deg;
+  }
+
+  87.5% {
+    --nui-rainbow-cycle: 412deg;
+  }
+
+  100% {
+    --nui-rainbow-cycle: 492deg;
+  }
+}
+
+@keyframes nui-rainbow-hue-cycle-linear {
+  from {
+    --nui-rainbow-cycle: 132deg;
+  }
+
+  to {
+    --nui-rainbow-cycle: calc(132deg + 360deg);
+  }
+}
+
+.nui-rainbow,
+.nuc-rainbow,
+nui-rainbow {
+  --nui-rainbow-duration: 30s;
+  --nui-rainbow-easing: linear;
+  --nui-rainbow-iterations: infinite;
+  --nui-rainbow-delay: 0s;
+  --nui-rainbow-direction: normal;
+  --nui-rainbow-fill-mode: none;
+  --nui-rainbow-play-state: running;
+  --nui-rainbow-initial-hue: 132deg;
+  --nui-rainbow-from: var(--nui-rainbow-initial-hue);
+  --nui-rainbow-span: 360deg;
+  --nui-rainbow-to: calc(var(--nui-rainbow-from) + var(--nui-rainbow-span));
+  --nui-rainbow-offset: 0deg;
+  --nui-rainbow-saturation: 55%;
+  --nui-rainbow-lightness: 52%;
+  --nui-rainbow-alpha: 1;
+  --nui-rainbow-cycle: var(--nui-rainbow-initial-hue);
+  --nui-rainbow-anim-name: nui-rainbow-hue-cycle;
+  --rainbow-hue: calc(
+    var(--nui-rainbow-from) +
+      (var(--nui-rainbow-cycle) - 132deg) *
+      (var(--nui-rainbow-span) / 360deg) + var(--nui-rainbow-offset)
+  );
+  --nui-rainbow-complement-hue: calc(var(--rainbow-hue) + 180deg);
+  --nui-rainbow-color: hsl(
+    var(--rainbow-hue) var(--nui-rainbow-saturation) var(--nui-rainbow-lightness) /
+      var(--nui-rainbow-alpha)
+  );
+  --nui-rainbow-color-soft: hsl(
+    var(--rainbow-hue) calc(var(--nui-rainbow-saturation) * 0.55)
+      calc(var(--nui-rainbow-lightness) + 12%) / var(--nui-rainbow-alpha)
+  );
+  --nui-rainbow-color-muted: hsl(
+    var(--rainbow-hue) calc(var(--nui-rainbow-saturation) * 0.35)
+      calc(var(--nui-rainbow-lightness) - 4%) / var(--nui-rainbow-alpha)
+  );
+  --nui-rainbow-complement: hsl(
+    var(--nui-rainbow-complement-hue) var(--nui-rainbow-saturation)
+      var(--nui-rainbow-lightness) / var(--nui-rainbow-alpha)
+  );
+  --nui-rainbow-oklch: oklch(
+    calc(var(--nui-rainbow-lightness) * 0.01)
+      calc(var(--nui-rainbow-saturation) * 0.003) var(--rainbow-hue) /
+      var(--nui-rainbow-alpha)
+  );
+  --nui-rainbow-animation: var(--nui-rainbow-anim-name)
+    var(--nui-rainbow-duration) var(--nui-rainbow-easing)
+    var(--nui-rainbow-delay) var(--nui-rainbow-iterations)
+    var(--nui-rainbow-direction) var(--nui-rainbow-fill-mode)
+    var(--nui-rainbow-play-state);
+  animation: var(--nui-rainbow-extra-animation, none), var(--nui-rainbow-animation);
+}
+
+.nui-rainbow[cycle='linear'],
+.nuc-rainbow[cycle='linear'],
+nui-rainbow[cycle='linear'] {
+  --nui-rainbow-anim-name: nui-rainbow-hue-cycle-linear;
+}
+
+.nui-rainbow[paused],
+.nui-rainbow.is-paused,
+.nuc-rainbow[paused],
+.nuc-rainbow.is-paused,
+nui-rainbow[paused] {
+  --nui-rainbow-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nui-rainbow:not([reduced-motion='ignore']),
+  .nuc-rainbow:not([reduced-motion='ignore']),
+  nui-rainbow:not([reduced-motion='ignore']) {
+    animation: none;
+    --nui-rainbow-cycle: var(--nui-rainbow-initial-hue);
+    --rainbow-hue: calc(var(--nui-rainbow-from) + var(--nui-rainbow-offset));
+  }
+}
+
+.nui-rainbow-text,
+.nuc-rainbow-text {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    hsl(
+      var(--rainbow-hue) var(--nui-rainbow-saturation)
+        var(--nui-rainbow-lightness) / var(--nui-rainbow-alpha)
+    ),
+    hsl(
+      calc(var(--rainbow-hue) + 90deg) var(--nui-rainbow-saturation)
+        var(--nui-rainbow-lightness) / var(--nui-rainbow-alpha)
+    ),
+    hsl(
+      calc(var(--rainbow-hue) + 180deg) var(--nui-rainbow-saturation)
+        var(--nui-rainbow-lightness) / var(--nui-rainbow-alpha)
+    ),
+    hsl(
+      calc(var(--rainbow-hue) + 270deg) var(--nui-rainbow-saturation)
+        var(--nui-rainbow-lightness) / var(--nui-rainbow-alpha)
+    ),
+    hsl(
+      calc(var(--rainbow-hue) + 360deg) var(--nui-rainbow-saturation)
+        var(--nui-rainbow-lightness) / var(--nui-rainbow-alpha)
+    )
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.nui-rainbow-border,
+.nuc-rainbow-border {
+  border-width: var(--nui-rainbow-border-width, 2px);
+  border-style: var(--nui-rainbow-border-style, solid);
+  border-color: var(--nui-rainbow-color);
+}
+
+.nui-rainbow-underline,
+.nuc-rainbow-underline {
+  text-decoration-line: underline;
+  text-decoration-color: var(--nui-rainbow-color);
+  text-decoration-thickness: var(--nui-rainbow-underline-thickness, 0.12em);
+  text-underline-offset: var(--nui-rainbow-underline-offset, 0.18em);
+}
