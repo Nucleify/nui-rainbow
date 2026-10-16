@@ -1,4 +1,13 @@
-export const NUI_RAINBOW_HUE_INITIAL = '132deg';
+/** Vue / Nuxt — light green (cycle origin). */
+export const NUI_RAINBOW_HUE_VUE = '152deg';
+/** React / Next — cyan. */
+export const NUI_RAINBOW_HUE_REACT = '190deg';
+/** Astro — purple. */
+export const NUI_RAINBOW_HUE_ASTRO = '292deg';
+/** Svelte — red (15deg + 360 for a continuous branded lap). */
+export const NUI_RAINBOW_HUE_SVELTE = '375deg';
+
+export const NUI_RAINBOW_HUE_INITIAL = NUI_RAINBOW_HUE_VUE;
 export const NUI_RAINBOW_DURATION_DEFAULT = '30s';
 export const NUI_RAINBOW_DURATION_SLOW = '60s';
 export const NUI_RAINBOW_EASING_DEFAULT = 'linear';

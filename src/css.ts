@@ -7,7 +7,11 @@ import {
   NUI_RAINBOW_DURATION_DEFAULT,
   NUI_RAINBOW_EASING_DEFAULT,
   NUI_RAINBOW_FILL_MODE_DEFAULT,
+  NUI_RAINBOW_HUE_ASTRO,
   NUI_RAINBOW_HUE_INITIAL,
+  NUI_RAINBOW_HUE_REACT,
+  NUI_RAINBOW_HUE_SVELTE,
+  NUI_RAINBOW_HUE_VUE,
   NUI_RAINBOW_ITERATIONS_DEFAULT,
   NUI_RAINBOW_LIGHTNESS_DEFAULT,
   NUI_RAINBOW_OFFSET_DEFAULT,
@@ -16,6 +20,9 @@ import {
   NUI_RAINBOW_TEXT_CLASS,
   NUI_RAINBOW_UNDERLINE_CLASS,
 } from './constants.js';
+
+/** Seamless return to Vue/Nuxt green after one branded lap. */
+const NUI_RAINBOW_HUE_VUE_LAP = `calc(${NUI_RAINBOW_HUE_VUE} + 360deg)`;
 
 export const NUI_RAINBOW_CSS = `@property --rainbow-hue {
   syntax: '<angle>';
@@ -29,41 +36,30 @@ export const NUI_RAINBOW_CSS = `@property --rainbow-hue {
   initial-value: ${NUI_RAINBOW_HUE_INITIAL};
 }
 
+/* Shell brands: Vue/Nuxt green → React/Next cyan → Astro purple → Svelte red. */
 @keyframes ${NUI_RAINBOW_ANIMATION_BRANDED} {
-  0% {
-    --nui-rainbow-cycle: 132deg;
+  0%,
+  12% {
+    --nui-rainbow-cycle: ${NUI_RAINBOW_HUE_VUE};
   }
 
-  12.5% {
-    --nui-rainbow-cycle: 210deg;
+  25%,
+  37% {
+    --nui-rainbow-cycle: ${NUI_RAINBOW_HUE_REACT};
   }
 
-  25% {
-    --nui-rainbow-cycle: 258deg;
+  50%,
+  62% {
+    --nui-rainbow-cycle: ${NUI_RAINBOW_HUE_ASTRO};
   }
 
-  37.5% {
-    --nui-rainbow-cycle: 292deg;
-  }
-
-  50% {
-    --nui-rainbow-cycle: 360deg;
-  }
-
-  62.5% {
-    --nui-rainbow-cycle: 392deg;
-  }
-
-  75% {
-    --nui-rainbow-cycle: 412deg;
-  }
-
-  87.5% {
-    --nui-rainbow-cycle: 412deg;
+  75%,
+  87% {
+    --nui-rainbow-cycle: ${NUI_RAINBOW_HUE_SVELTE};
   }
 
   100% {
-    --nui-rainbow-cycle: 492deg;
+    --nui-rainbow-cycle: ${NUI_RAINBOW_HUE_VUE_LAP};
   }
 }
 

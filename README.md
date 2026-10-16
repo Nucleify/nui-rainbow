@@ -52,8 +52,8 @@ Vue:
 | Prop | Attribute | Default | Notes |
 |---|---|---|---|
 | `duration` | `duration` | `30s` | Number = seconds (`12` → `12s`). Also `800ms`. |
-| `initialHue` | `initial-hue` | `132deg` | Cycle origin. Alias: `from`. |
-| `from` | `from` | `132deg` | Same as `initialHue`. Wins when both are set. |
+| `initialHue` | `initial-hue` | `152deg` | Cycle origin (Vue/Nuxt green). Alias: `from`. |
+| `from` | `from` | `152deg` | Same as `initialHue`. Wins when both are set. |
 | `to` | `to` | origin + `360deg` | Sets span to `to - from`. |
 | `hueSpan` | `hue-span` | `360deg` | How far the cycle travels. Ignored when `to` is set. |
 | `offset` | `offset` | `0deg` | Extra hue shift (stagger children). |
@@ -63,7 +63,7 @@ Vue:
 | `paused` | `paused` | `false` | Boolean attribute. |
 | `direction` | `direction` | `normal` | `normal` / `reverse` / `alternate` / `alternate-reverse`. |
 | `fillMode` | `fill-mode` | `none` | `none` / `forwards` / `backwards` / `both`. |
-| `cycle` | `cycle` | `branded` | `branded` (curved path) or `linear` (even 360°). |
+| `cycle` | `cycle` | `branded` | `branded` (Vue/Nuxt → React/Next → Astro → Svelte) or `linear` (even 360°). |
 | `reducedMotion` | `reduced-motion` | `reduce` | `ignore` keeps motion when the user prefers reduced motion. |
 | `saturation` | `saturation` | `55%` | Used by color tokens. Number = percent. |
 | `lightness` | `lightness` | `52%` | Used by color tokens. Number = percent. |

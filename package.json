@@ -1,7 +1,7 @@
 {
   "name": "nui-rainbow",
-  "version": "0.1.0",
-  "description": "Rainbow hue cycle for any element. Web component, CSS class, or applyRainbow().",
+  "version": "0.1.1",
+  "description": "Shell-brand hue cycle (Vue/Nuxt, React/Next, Astro, Svelte) for any element. Web component, CSS class, or applyRainbow().",
   "type": "module",
   "sideEffects": [
     "./dist/index.js",

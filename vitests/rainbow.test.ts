@@ -35,7 +35,7 @@ describe('nui-rainbow', () => {
   });
 
   it('keeps the hue origin and duration presets stable', () => {
-    expect(NUI_RAINBOW_HUE_INITIAL).toBe('132deg');
+    expect(NUI_RAINBOW_HUE_INITIAL).toBe('152deg');
     expect(NUI_RAINBOW_DURATION_DEFAULT).toBe('30s');
     expect(NUI_RAINBOW_DURATION_SLOW).toBe('60s');
   });

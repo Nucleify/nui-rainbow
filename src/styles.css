@@ -1,60 +1,49 @@
 @property --rainbow-hue {
   syntax: '<angle>';
   inherits: true;
-  initial-value: 132deg;
+  initial-value: 152deg;
 }
 
 @property --nui-rainbow-cycle {
   syntax: '<angle>';
   inherits: true;
-  initial-value: 132deg;
+  initial-value: 152deg;
 }
 
+/* Shell brands: Vue/Nuxt green → React/Next cyan → Astro purple → Svelte red. */
 @keyframes nui-rainbow-hue-cycle {
-  0% {
-    --nui-rainbow-cycle: 132deg;
+  0%,
+  12% {
+    --nui-rainbow-cycle: 152deg;
   }
 
-  12.5% {
-    --nui-rainbow-cycle: 210deg;
+  25%,
+  37% {
+    --nui-rainbow-cycle: 190deg;
   }
 
-  25% {
-    --nui-rainbow-cycle: 258deg;
-  }
-
-  37.5% {
+  50%,
+  62% {
     --nui-rainbow-cycle: 292deg;
   }
 
-  50% {
-    --nui-rainbow-cycle: 360deg;
-  }
-
-  62.5% {
-    --nui-rainbow-cycle: 392deg;
-  }
-
-  75% {
-    --nui-rainbow-cycle: 412deg;
-  }
-
-  87.5% {
-    --nui-rainbow-cycle: 412deg;
+  75%,
+  87% {
+    --nui-rainbow-cycle: 375deg;
   }
 
   100% {
-    --nui-rainbow-cycle: 492deg;
+    --nui-rainbow-cycle: calc(152deg + 360deg);
   }
 }
 
 @keyframes nui-rainbow-hue-cycle-linear {
   from {
-    --nui-rainbow-cycle: 132deg;
+    --nui-rainbow-cycle: 152deg;
   }
 
   to {
-    --nui-rainbow-cycle: calc(132deg + 360deg);
+    --nui-rainbow-cycle: calc(152deg + 360deg);
   }
 }
 
@@ -68,7 +57,7 @@ nui-rainbow {
   --nui-rainbow-direction: normal;
   --nui-rainbow-fill-mode: none;
   --nui-rainbow-play-state: running;
-  --nui-rainbow-initial-hue: 132deg;
+  --nui-rainbow-initial-hue: 152deg;
   --nui-rainbow-from: var(--nui-rainbow-initial-hue);
   --nui-rainbow-span: 360deg;
   --nui-rainbow-to: calc(var(--nui-rainbow-from) + var(--nui-rainbow-span));
@@ -80,7 +69,7 @@ nui-rainbow {
   --nui-rainbow-anim-name: nui-rainbow-hue-cycle;
   --rainbow-hue: calc(
     var(--nui-rainbow-from) +
-      (var(--nui-rainbow-cycle) - 132deg) *
+      (var(--nui-rainbow-cycle) - 152deg) *
       (var(--nui-rainbow-span) / 360deg) + var(--nui-rainbow-offset)
   );
   --nui-rainbow-complement-hue: calc(var(--rainbow-hue) + 180deg);
