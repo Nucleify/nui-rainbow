@@ -10,6 +10,10 @@ export type NuiRainbowCycle = 'branded' | 'linear';
 
 export type NuiRainbowFillMode = 'none' | 'forwards' | 'backwards' | 'both';
 
+export type NuiRainbowMode = 'css' | 'gpu';
+
+export type NuiRainbowFps = number | 'auto' | 'smooth' | 'eco';
+
 export interface NuiRainbowCycleDetail {
   animationName: string;
 }
@@ -32,4 +36,7 @@ export interface NuiRainbowOptions {
   to?: string | number;
   offset?: string | number;
   alpha?: string | number;
+  fps?: NuiRainbowFps;
+  autoPause?: boolean;
+  mode?: NuiRainbowMode;
 }

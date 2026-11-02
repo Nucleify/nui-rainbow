@@ -216,4 +216,47 @@ describe('nui-rainbow', () => {
       'calc(150deg - var(--nui-rainbow-from))',
     );
   });
+
+  it('optimizes CSS Houdini property to inherits: false for cycle', () => {
+    expect(NUI_RAINBOW_CSS).toMatch(
+      /@property --nui-rainbow-cycle\s*\{[^}]*inherits:\s*false;/s,
+    );
+  });
+
+  it('supports GPU filter mode and eco mode classes', () => {
+    const el = document.createElement('div');
+    document.body.append(el);
+
+    const stop = applyRainbow(el, { mode: 'gpu', fps: 'eco' });
+    expect(el.getAttribute('mode')).toBe('gpu');
+    expect(el.getAttribute('fps')).toBe('eco');
+    expect(el.style.getPropertyValue('--nui-rainbow-anim-name')).toBe(
+      'nui-rainbow-hue-gpu',
+    );
+
+    stop();
+    expect(el.hasAttribute('mode')).toBe(false);
+    expect(el.hasAttribute('fps')).toBe(false);
+  });
+
+  it('supports web component performance attributes (fps, mode, auto-pause)', async () => {
+    const el = document.createElement('nui-rainbow');
+    el.setAttribute('mode', 'gpu');
+    el.setAttribute('fps', '20');
+    el.setAttribute('auto-pause', 'false');
+    document.body.append(el);
+    await customElements.whenDefined('nui-rainbow');
+
+    expect(el.mode).toBe('gpu');
+    expect(el.fps).toBe(20);
+    expect(el.autoPause).toBe(false);
+
+    el.mode = 'css';
+    el.fps = 'eco';
+    el.autoPause = true;
+
+    expect(el.getAttribute('mode')).toBe('css');
+    expect(el.getAttribute('fps')).toBe('eco');
+    expect(el.getAttribute('auto-pause')).toBe('true');
+  });
 });

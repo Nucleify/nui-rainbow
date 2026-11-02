@@ -68,3 +68,34 @@ export function formatCssAlpha(
   const trimmed = value.trim();
   return trimmed || fallback;
 }
+
+export function parseCssTimeToMs(
+  value: string | number | null | undefined,
+  fallbackMs = 30000,
+): number {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) && value > 0 ? value * 1000 : fallbackMs;
+  }
+
+  if (typeof value !== 'string') {
+    return fallbackMs;
+  }
+
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) {
+    return fallbackMs;
+  }
+
+  if (trimmed.endsWith('ms')) {
+    const num = Number.parseFloat(trimmed.slice(0, -2));
+    return Number.isFinite(num) && num > 0 ? num : fallbackMs;
+  }
+
+  if (trimmed.endsWith('s')) {
+    const num = Number.parseFloat(trimmed.slice(0, -1));
+    return Number.isFinite(num) && num > 0 ? num * 1000 : fallbackMs;
+  }
+
+  const num = Number.parseFloat(trimmed);
+  return Number.isFinite(num) && num > 0 ? num * 1000 : fallbackMs;
+}

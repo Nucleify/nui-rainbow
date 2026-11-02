@@ -1,12 +1,15 @@
 import {
   NUI_RAINBOW_ALPHA_DEFAULT,
   NUI_RAINBOW_ANIMATION_BRANDED,
+  NUI_RAINBOW_ANIMATION_GPU,
   NUI_RAINBOW_ANIMATION_LINEAR,
   NUI_RAINBOW_BORDER_CLASS,
   NUI_RAINBOW_DELAY_DEFAULT,
   NUI_RAINBOW_DURATION_DEFAULT,
   NUI_RAINBOW_EASING_DEFAULT,
+  NUI_RAINBOW_ECO_CLASS,
   NUI_RAINBOW_FILL_MODE_DEFAULT,
+  NUI_RAINBOW_GPU_CLASS,
   NUI_RAINBOW_HUE_ASTRO,
   NUI_RAINBOW_HUE_INITIAL,
   NUI_RAINBOW_HUE_REACT,
@@ -32,7 +35,7 @@ export const NUI_RAINBOW_CSS = `@property --rainbow-hue {
 
 @property --nui-rainbow-cycle {
   syntax: '<angle>';
-  inherits: true;
+  inherits: false;
   initial-value: ${NUI_RAINBOW_HUE_INITIAL};
 }
 
@@ -70,6 +73,16 @@ export const NUI_RAINBOW_CSS = `@property --rainbow-hue {
 
   to {
     --nui-rainbow-cycle: calc(${NUI_RAINBOW_HUE_INITIAL} + 360deg);
+  }
+}
+
+@keyframes ${NUI_RAINBOW_ANIMATION_GPU} {
+  from {
+    filter: hue-rotate(0deg);
+  }
+
+  to {
+    filter: hue-rotate(360deg);
   }
 }
 
@@ -126,6 +139,7 @@ nui-rainbow {
     var(--nui-rainbow-direction) var(--nui-rainbow-fill-mode)
     var(--nui-rainbow-play-state);
   animation: var(--nui-rainbow-extra-animation, none), var(--nui-rainbow-animation);
+  isolation: isolate;
 }
 
 .nui-rainbow[cycle='linear'],
@@ -134,12 +148,36 @@ nui-rainbow[cycle='linear'] {
   --nui-rainbow-anim-name: ${NUI_RAINBOW_ANIMATION_LINEAR};
 }
 
+.nui-rainbow[mode='gpu'],
+.nui-rainbow.is-gpu,
+.${NUI_RAINBOW_GPU_CLASS},
+.nuc-rainbow[mode='gpu'],
+.nuc-rainbow.is-gpu,
+.nuc-rainbow-gpu,
+nui-rainbow[mode='gpu'] {
+  --nui-rainbow-anim-name: ${NUI_RAINBOW_ANIMATION_GPU};
+  will-change: filter;
+}
+
+.${NUI_RAINBOW_ECO_CLASS},
+.nuc-rainbow-eco,
+.nui-rainbow[fps='eco'],
+.nuc-rainbow[fps='eco'],
+nui-rainbow[fps='eco'] {
+  --nui-rainbow-easing: steps(180);
+}
+
 .nui-rainbow[paused],
 .nui-rainbow.is-paused,
+.nui-rainbow[data-nui-offscreen],
+.nui-rainbow.is-offscreen,
 .nuc-rainbow[paused],
 .nuc-rainbow.is-paused,
-nui-rainbow[paused] {
-  --nui-rainbow-play-state: paused;
+.nuc-rainbow[data-nui-offscreen],
+.nuc-rainbow.is-offscreen,
+nui-rainbow[paused],
+nui-rainbow[data-nui-offscreen] {
+  --nui-rainbow-play-state: paused !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -180,6 +218,7 @@ nui-rainbow[paused] {
   );
   -webkit-background-clip: text;
   background-clip: text;
+  isolation: isolate;
 }
 
 .${NUI_RAINBOW_BORDER_CLASS},

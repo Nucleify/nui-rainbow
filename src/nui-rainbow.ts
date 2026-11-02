@@ -1,4 +1,10 @@
-import { applyRainbowOptions, bindRainbowCycle } from './apply.js';
+import {
+  applyRainbowOptions,
+  bindRainbowCycle,
+  bindRainbowFpsLoop,
+  observeVisibility,
+  resolveTargetFps,
+} from './apply.js';
 import {
   NUI_RAINBOW_ALPHA_DEFAULT,
   NUI_RAINBOW_CLASS,
@@ -20,6 +26,7 @@ import {
   formatCssAngle,
   formatCssPercent,
   formatCssTime,
+  parseCssTimeToMs,
 } from './duration.js';
 import { ensureRainbowStyles } from './styles.js';
 import type {
@@ -27,6 +34,8 @@ import type {
   NuiRainbowCycleDetail,
   NuiRainbowDirection,
   NuiRainbowFillMode,
+  NuiRainbowFps,
+  NuiRainbowMode,
   NuiRainbowReducedMotion,
 } from './types.js';
 
@@ -77,20 +86,25 @@ export class NuiRainbow extends HTMLElement {
     'alpha',
     'cycle',
     'fill-mode',
+    'fps',
+    'auto-pause',
+    'mode',
   ];
 
   private unbindCycle: (() => void) | undefined;
+  private unbindVisibility: (() => void) | undefined;
+  private unbindFpsLoop: (() => void) | undefined;
+  private isElementVisible = true;
 
   connectedCallback(): void {
     ensureRainbowStyles();
     this.classList.add(NUI_RAINBOW_CLASS);
     this.syncFromAttributes();
-    this.unbindCycle = bindRainbowCycle(this);
+    this.setupPerformanceListeners();
   }
 
   disconnectedCallback(): void {
-    this.unbindCycle?.();
-    this.unbindCycle = undefined;
+    this.cleanupPerformanceListeners();
   }
 
   attributeChangedCallback(): void {
@@ -99,6 +113,7 @@ export class NuiRainbow extends HTMLElement {
     }
 
     this.syncFromAttributes();
+    this.setupPerformanceListeners();
   }
 
   get duration(): string {
@@ -279,6 +294,72 @@ export class NuiRainbow extends HTMLElement {
     this.setAttribute('fill-mode', value);
   }
 
+  get fps(): NuiRainbowFps {
+    const val = this.getAttribute('fps');
+    if (!val) return 'smooth';
+    if (val === 'auto' || val === 'eco' || val === 'smooth') return val;
+    const num = Number.parseFloat(val);
+    return Number.isFinite(num) && num > 0 ? num : 'smooth';
+  }
+
+  set fps(value: NuiRainbowFps) {
+    this.setAttribute('fps', String(value));
+  }
+
+  get autoPause(): boolean {
+    return this.getAttribute('auto-pause') !== 'false';
+  }
+
+  set autoPause(value: boolean) {
+    this.setAttribute('auto-pause', value ? 'true' : 'false');
+  }
+
+  get mode(): NuiRainbowMode {
+    return this.getAttribute('mode') === 'gpu' ? 'gpu' : 'css';
+  }
+
+  set mode(value: NuiRainbowMode) {
+    this.setAttribute('mode', value);
+  }
+
+  private setupPerformanceListeners(): void {
+    this.cleanupPerformanceListeners();
+
+    this.unbindCycle = bindRainbowCycle(this);
+
+    if (this.autoPause) {
+      this.unbindVisibility = observeVisibility(this, (visible) => {
+        this.isElementVisible = visible;
+      });
+    }
+
+    const targetFps = resolveTargetFps(this.fps);
+    if (targetFps != null && this.mode !== 'gpu') {
+      const durationMs = parseCssTimeToMs(
+        this.duration,
+        parseCssTimeToMs(NUI_RAINBOW_DURATION_DEFAULT),
+      );
+      this.unbindFpsLoop = bindRainbowFpsLoop(this, {
+        durationMs,
+        cycle: this.cycle,
+        targetFps,
+        direction: this.direction,
+        isPaused: () => this.paused || !this.isElementVisible,
+      });
+    }
+  }
+
+  private cleanupPerformanceListeners(): void {
+    this.unbindCycle?.();
+    this.unbindCycle = undefined;
+
+    this.unbindVisibility?.();
+    this.unbindVisibility = undefined;
+
+    this.unbindFpsLoop?.();
+    this.unbindFpsLoop = undefined;
+  }
+
   private syncFromAttributes(): void {
     applyRainbowOptions(this, {
       duration: this.duration,
@@ -294,6 +375,9 @@ export class NuiRainbow extends HTMLElement {
       offset: this.offset,
       cycle: this.cycle,
       fillMode: this.fillMode,
+      fps: this.fps,
+      autoPause: this.autoPause,
+      mode: this.mode,
       ...(this.hasAttribute('to')
         ? { to: this.to }
         : { hueSpan: this.hueSpan }),

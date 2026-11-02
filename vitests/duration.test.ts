@@ -9,6 +9,7 @@ import {
   formatCssAngle,
   formatCssPercent,
   formatCssTime,
+  parseCssTimeToMs,
 } from '../src/duration.js';
 
 describe('formatCssTime', () => {
@@ -64,5 +65,19 @@ describe('formatCssAlpha', () => {
     expect(formatCssAlpha(0.4)).toBe('0.4');
     expect(formatCssAlpha('80%')).toBe('80%');
     expect(formatCssAlpha('')).toBe('1');
+  });
+});
+
+describe('parseCssTimeToMs', () => {
+  it('parses seconds, milliseconds, and numeric values', () => {
+    expect(parseCssTimeToMs(12)).toBe(12000);
+    expect(parseCssTimeToMs('30s')).toBe(30000);
+    expect(parseCssTimeToMs('500ms')).toBe(500);
+    expect(parseCssTimeToMs('4.5')).toBe(4500);
+  });
+
+  it('falls back on invalid or empty inputs', () => {
+    expect(parseCssTimeToMs('', 10000)).toBe(10000);
+    expect(parseCssTimeToMs(null, 15000)).toBe(15000);
   });
 });

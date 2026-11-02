@@ -1,9 +1,12 @@
 <div align="center">
-  <img src="https://github.com/Nucleify/Nucleify/blob/prod/public/img/logo.svg" width="70" alt="Nucleify logo">
+  <img src="https://github.com/Nucleify/Nucleify/blob/prod/web/public/img/logo.svg" width="70" alt="Nucleify logo">
   <h1>nui-rainbow</h1>
+  <p>Ultra-lightweight, hardware-friendly shell-brand hue cycle for any element.</p>
 </div>
 
-Rainbow hue cycle on `--rainbow-hue`. Use the web component, a CSS class, or `applyRainbow()`.
+Rainbow hue cycle on `--rainbow-hue`. Use as a **web component**, a **CSS class**, or via **`applyRainbow()`**.
+
+---
 
 ## Install
 
@@ -11,7 +14,11 @@ Rainbow hue cycle on `--rainbow-hue`. Use the web component, a CSS class, or `ap
 npm install nui-rainbow
 ```
 
-## Web component
+---
+
+## Quick start
+
+### 1. Web component
 
 ```html
 <script type="module">
@@ -29,7 +36,7 @@ h1 {
 }
 ```
 
-Or use a ready-made token:
+Or use pre-computed tokens:
 
 ```css
 h1 {
@@ -39,100 +46,114 @@ h1 {
 }
 ```
 
-Vue:
+### 2. CSS class
 
-```vue
-<nui-rainbow :duration="speed" :paused="paused" initial-hue="210deg">
-  <slot />
-</nui-rainbow>
-```
-
-### Props / attributes
-
-| Prop | Attribute | Default | Notes |
-|---|---|---|---|
-| `duration` | `duration` | `30s` | Number = seconds (`12` → `12s`). Also `800ms`. |
-| `initialHue` | `initial-hue` | `152deg` | Cycle origin (Vue/Nuxt green). Alias: `from`. |
-| `from` | `from` | `152deg` | Same as `initialHue`. Wins when both are set. |
-| `to` | `to` | origin + `360deg` | Sets span to `to - from`. |
-| `hueSpan` | `hue-span` | `360deg` | How far the cycle travels. Ignored when `to` is set. |
-| `offset` | `offset` | `0deg` | Extra hue shift (stagger children). |
-| `easing` | `easing` | `linear` | Any CSS easing. |
-| `iterations` | `iterations` | `infinite` | Number or `infinite`. |
-| `delay` | `delay` | `0s` | Number = seconds. |
-| `paused` | `paused` | `false` | Boolean attribute. |
-| `direction` | `direction` | `normal` | `normal` / `reverse` / `alternate` / `alternate-reverse`. |
-| `fillMode` | `fill-mode` | `none` | `none` / `forwards` / `backwards` / `both`. |
-| `cycle` | `cycle` | `branded` | `branded` (Vue/Nuxt → React/Next → Astro → Svelte) or `linear` (even 360°). |
-| `reducedMotion` | `reduced-motion` | `reduce` | `ignore` keeps motion when the user prefers reduced motion. |
-| `saturation` | `saturation` | `55%` | Used by color tokens. Number = percent. |
-| `lightness` | `lightness` | `52%` | Used by color tokens. Number = percent. |
-| `alpha` | `alpha` | `1` | Used by color tokens. |
-
-`<nui-rainbow>` emits `rainbowcycle` on each animation iteration (`detail.animationName`).
-
-## Class or helper
-
-```ts
-import { applyRainbow } from 'nui-rainbow';
-
-const stop = applyRainbow(document.querySelector('.surface'), {
-  duration: 45,
-  paused: false,
-  cycle: 'linear',
-  offset: 24,
-});
-
-el.addEventListener('rainbowcycle', () => { /* next lap */ });
-
-stop();
+```css
+@import 'nui-rainbow/styles.css';
 ```
 
 ```html
 <div class="nui-rainbow" style="--nui-rainbow-duration: 12s">
-  …
+  <p class="nui-rainbow-text">Rainbow gradient text</p>
 </div>
 ```
 
-```css
-@import 'nui-rainbow/styles.css';
+> **Note:** `.nuc-rainbow` is an alias of `.nui-rainbow`.
 
-.surface {
-  color: hsl(var(--rainbow-hue) 55% 52%);
-}
+### 3. JavaScript / TypeScript helper
+
+```ts
+import { applyRainbow } from 'nui-rainbow';
+
+const stop = applyRainbow(document.querySelector('.surface')!, {
+  duration: 45,
+  cycle: 'linear',
+  fps: 'eco',
+  offset: 24,
+});
+
+// Stop and restore previous styles whenever needed:
+stop();
 ```
 
-`.nuc-rainbow` is an alias of `.nui-rainbow`.
+---
 
-CSS-only usage does not emit `rainbowcycle`. Call `bindRainbowCycle(el)` if you need the event without `applyRainbow()`.
+## Documentation
 
-### Recipes
+<details open>
+<summary><b>⚡ Performance & Optimization</b></summary>
 
-Add a recipe class on the cycling element or a descendant (`--rainbow-hue` inherits):
+`nui-rainbow` is designed to be gentle on CPU, GPU, and battery, especially on mobile and budget laptops:
+
+* **Automatic Off-Screen & Tab Pause**: Integrated `IntersectionObserver` and Page Visibility listeners pause cycles automatically whenever the element leaves the viewport or the browser tab is hidden (0% CPU/GPU overhead when not visible).
+* **Frame Rate Limiter (`fps`)**: Avoid running 120 FPS style recalculations for subtle color shifts. Pass `fps="eco"` (15 FPS), `fps="auto"` (auto-detected for devices with `≤ 4` cores or data saver), or a custom limit like `fps="30"`.
+* **Zero Recalculate Style Thrashing**: The internal Houdini property `--nui-rainbow-cycle` is declared with `inherits: false`, avoiding recursive DOM tree invalidation on child elements.
+* **100% GPU Compositor Mode (`mode="gpu"` / `.nui-rainbow-gpu`)**: Runs entirely on the GPU Compositor thread via hardware-accelerated `filter: hue-rotate()`, achieving 0% main thread CPU consumption.
+
+```html
+<!-- Eco mode (15 FPS) for weak mobile devices -->
+<nui-rainbow fps="eco">...</nui-rainbow>
+
+<!-- Full GPU acceleration mode -->
+<nui-rainbow mode="gpu">...</nui-rainbow>
+
+<!-- Pure CSS stepped eco cycle -->
+<div class="nui-rainbow nui-rainbow-eco">...</div>
+```
+
+</details>
+
+<details>
+<summary><b>⚙️ Props & Attributes Reference</b></summary>
+
+| Prop | Attribute | Default | Notes |
+|---|---|---|---|
+| `duration` | `duration` | `30s` | Seconds (`12` → `12s`) or milliseconds (`800ms`). |
+| `initialHue` | `initial-hue` | `152deg` | Cycle origin (Vue/Nuxt green). Alias: `from`. |
+| `from` | `from` | `152deg` | Same as `initialHue`. Takes precedence when both are set. |
+| `to` | `to` | origin + `360deg` | Sets span to `to - from`. |
+| `hueSpan` | `hue-span` | `360deg` | How far the cycle travels. Ignored when `to` is set. |
+| `offset` | `offset` | `0deg` | Extra hue shift (useful for staggering children). |
+| `easing` | `easing` | `linear` | Any CSS timing function. |
+| `iterations` | `iterations` | `infinite` | Number or `infinite`. |
+| `delay` | `delay` | `0s` | Start delay in seconds or CSS time. |
+| `paused` | `paused` | `false` | Boolean toggle. |
+| `direction` | `direction` | `normal` | `normal` / `reverse` / `alternate` / `alternate-reverse`. |
+| `fillMode` | `fill-mode` | `none` | `none` / `forwards` / `backwards` / `both`. |
+| `cycle` | `cycle` | `branded` | `branded` (Vue/Nuxt → React/Next → Astro → Svelte) or `linear` (even 360°). |
+| `fps` | `fps` | `smooth` | `smooth` (native CSS), `auto` (low-end device detection), `eco` (15 FPS), or a number (`15`, `30`). |
+| `autoPause` | `auto-pause` | `true` | Pauses when off-screen or background tab. Set `false` to disable. |
+| `mode` | `mode` | `css` | `css` (Houdini angle) or `gpu` (`filter: hue-rotate()` running on GPU compositor). |
+| `reducedMotion` | `reduced-motion` | `reduce` | `ignore` keeps animation when user prefers reduced motion. |
+| `saturation` | `saturation` | `55%` | S in HSL tokens. Number = percent. |
+| `lightness` | `lightness` | `52%` | L in HSL tokens. Number = percent. |
+| `alpha` | `alpha` | `1` | Alpha opacity in color tokens. |
+
+`<nui-rainbow>` emits a `rainbowcycle` event on each iteration (`detail.animationName`).
+
+</details>
+
+<details>
+<summary><b>🎨 Recipes & Styling</b></summary>
+
+Add a recipe class on the cycling element or any descendant (`--rainbow-hue` inherits):
 
 | Class | Effect |
 |---|---|
 | `.nui-rainbow-text` | Rainbow gradient clipped to text. |
 | `.nui-rainbow-border` | Border tinted with `--nui-rainbow-color`. |
 | `.nui-rainbow-underline` | Underline tinted with `--nui-rainbow-color`. |
+| `.nui-rainbow-gpu` | Hardware-accelerated GPU filter cycle (`filter: hue-rotate()`), 0% CPU overhead. |
+| `.nui-rainbow-eco` | Low-frequency stepped cycle (stepped easing) for low CPU usage in pure CSS. |
 
-`.nuc-rainbow-text`, `.nuc-rainbow-border`, and `.nuc-rainbow-underline` are aliases.
+> `.nuc-rainbow-text`, `.nuc-rainbow-border`, `.nuc-rainbow-underline`, `.nuc-rainbow-gpu`, and `.nuc-rainbow-eco` are supported aliases.
 
+#### Text gradient recipe:
 ```html
-<nui-rainbow class="nui-rainbow-text">Hello</nui-rainbow>
+<nui-rainbow class="nui-rainbow-text">Hello Rainbow</nui-rainbow>
 ```
 
-`--rainbow-hue` inherits, so a child can add its own shift:
-
-```css
-.letter {
-  color: hsl(
-    calc(var(--rainbow-hue) + var(--nui-rainbow-offset, 0deg))
-      var(--nui-rainbow-saturation) var(--nui-rainbow-lightness)
-  );
-}
-```
-
+#### Staggered children with offset:
 ```html
 <div class="nui-rainbow">
   <span style="--nui-rainbow-offset: 0deg">A</span>
@@ -141,64 +162,82 @@ Add a recipe class on the cycling element or a descendant (`--rainbow-hue` inher
 </div>
 ```
 
-Or put `.nui-rainbow` on each letter with a different `--nui-rainbow-offset` so tokens like `--nui-rainbow-color` pick up the shift.
+</details>
 
-### Compose with another animation
+<details>
+<summary><b>🌈 CSS Variables & Tokens</b></summary>
 
-The cycle lives on `--nui-rainbow-animation`. Keep another animation without overwriting it:
+Available tokens computed from the cycle:
 
+| Variable | Description |
+|---|---|
+| `--rainbow-hue` | Public hue angle token for `hsl()` / `oklch()`. |
+| `--nui-rainbow-color` | `hsl(hue saturation lightness / alpha)` |
+| `--nui-rainbow-color-soft` | Lighter, less saturated companion. |
+| `--nui-rainbow-color-muted` | Duller companion. |
+| `--nui-rainbow-complement` | Complementary opposite hue, same S/L/alpha. |
+| `--nui-rainbow-complement-hue` | `--rainbow-hue + 180deg` |
+| `--nui-rainbow-oklch` | Same cycle in modern `oklch()`. |
+| `--nui-rainbow-duration` | Cycle length. |
+| `--nui-rainbow-initial-hue` | Cycle origin. |
+| `--nui-rainbow-from` | Hue at progress 0 (defaults to initial hue). |
+| `--nui-rainbow-to` | Computed `from + span`. |
+| `--nui-rainbow-span` | Total angle distance (default `360deg`). |
+| `--nui-rainbow-offset` | Additional hue shift. |
+| `--nui-rainbow-easing` | Timing function. |
+| `--nui-rainbow-iterations` | Repeat count. |
+| `--nui-rainbow-delay` | Start delay. |
+| `--nui-rainbow-direction` | Animation direction. |
+| `--nui-rainbow-fill-mode` | `animation-fill-mode`. |
+| `--nui-rainbow-saturation` | Used for color tokens. |
+| `--nui-rainbow-lightness` | Used for color tokens. |
+| `--nui-rainbow-alpha` | Used for color tokens. |
+| `--nui-rainbow-animation` | Full cycle shorthand. |
+| `--nui-rainbow-extra-animation` | Optional extra animation to compose. |
+
+`prefers-reduced-motion: reduce` automatically stops animation unless `reduced-motion="ignore"`.
+
+</details>
+
+<details>
+<summary><b>🧩 Frameworks & Shadow DOM</b></summary>
+
+#### Vue / Nuxt
+```vue
+<template>
+  <nui-rainbow :duration="speed" :paused="isPaused" fps="eco" initial-hue="210deg">
+    <slot />
+  </nui-rainbow>
+</template>
+```
+
+#### React / Next.js
+```tsx
+import 'nui-rainbow';
+
+export function RainbowBanner({ children }: { children: React.ReactNode }) {
+  return (
+    <nui-rainbow duration="15s" fps="eco">
+      {children}
+    </nui-rainbow>
+  );
+}
+```
+
+#### Composing with another animation
 ```css
 .surface {
   --nui-rainbow-extra-animation: fade-in 0.4s ease;
 }
 ```
 
-Or list it yourself:
-
-```css
-.surface {
-  animation: fade-in 0.4s ease, var(--nui-rainbow-animation);
-}
-```
-
-## CSS variables
-
-Set these on the same element that has the class / component:
-
-| Variable | Role |
-|---|---|
-| `--rainbow-hue` | Public hue token for `hsl()` / `oklch()`. |
-| `--nui-rainbow-color` | `hsl(hue saturation lightness / alpha)`. |
-| `--nui-rainbow-color-soft` | Lighter, less saturated sibling. |
-| `--nui-rainbow-color-muted` | Duller sibling. |
-| `--nui-rainbow-complement` | Opposite hue, same S/L/alpha. |
-| `--nui-rainbow-complement-hue` | `--rainbow-hue + 180deg`. |
-| `--nui-rainbow-oklch` | Same cycle in `oklch()`. |
-| `--nui-rainbow-duration` | Cycle length. |
-| `--nui-rainbow-initial-hue` | Cycle origin. |
-| `--nui-rainbow-from` | Hue at progress 0 (defaults to initial hue). |
-| `--nui-rainbow-to` | Computed `from + span`. |
-| `--nui-rainbow-span` | Travel distance (default `360deg`). |
-| `--nui-rainbow-offset` | Extra hue shift. |
-| `--nui-rainbow-easing` | Timing function. |
-| `--nui-rainbow-iterations` | Repeat count. |
-| `--nui-rainbow-delay` | Start delay. |
-| `--nui-rainbow-direction` | Animation direction. |
-| `--nui-rainbow-fill-mode` | `animation-fill-mode`. |
-| `--nui-rainbow-saturation` | For color tokens. |
-| `--nui-rainbow-lightness` | For color tokens. |
-| `--nui-rainbow-alpha` | For color tokens. |
-| `--nui-rainbow-animation` | Full cycle shorthand. |
-| `--nui-rainbow-extra-animation` | Optional extra animation to compose. |
-
-`prefers-reduced-motion: reduce` stops the animation unless `reduced-motion="ignore"`.
-
-## Styles
-
-`applyRainbow()` / `<nui-rainbow>` adopt a constructable stylesheet when the document supports it, and fall back to a `<style id="nui-rainbow-styles">` tag. For a shadow root:
+#### Shadow Root / Adopted Stylesheets
+`applyRainbow()` and `<nui-rainbow>` adopt a constructable stylesheet automatically when supported. To manually adopt into a shadow root:
 
 ```ts
 import { getRainbowStyleSheet } from 'nui-rainbow';
 
 shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, getRainbowStyleSheet()];
 ```
+
+</details>
